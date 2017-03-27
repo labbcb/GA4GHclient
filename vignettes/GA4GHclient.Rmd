@@ -1,0 +1,281 @@
+---
+title: "GA4GHclient"
+author: "Welliton Souza"
+date: '`r Sys.Date()`'
+package: "`r pkg_ver('GA4GHclient')`"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{GA4GHclient}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}  
+---
+
+# Introduction
+
+The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) (GA4GH) was formed to help accelerate the potential of genomic medicine to advance human health.
+It brings together over 400 leading institutions working in healthcare, research, disease advocacy, life science, and information technology.
+The [Data Working Group](http://ga4gh.org/#/) of the GA4GH developed [data model schemas](https://github.com/ga4gh/schemas) and application program interfaces (APIs) for genomic data.
+These APIs are specifically designed to allow sharing of genomics data in a standardized manner and without having to exchange complete experiments.
+They developed a [reference implementation for these APIs](https://github.com/ga4gh/server) providing a web server for hosting genomic data.
+
+The [Bioconductor](http://bioconductor.org/) project provides tools for the analysis and comprehension of high-throughput genomic data.
+It uses the [R statistical programming language](https://cran.r-project.org/), and is open source and open development.
+The Bioconductor provides stable representations for genomics data such as [biological sequences](https://bioconductor.org/packages/Biostrings/) and [genomic variants](https://bioconductor.org/packages/VariantAnnotation/).
+
+We developed GA4GHclient, a Bioconductor package that provides an easy way to access public data servers through GA4GH APIs.
+The requested output data are converted into [tidy data](http://vita.had.co.nz/papers/tidy-data.pdf) and presented as data frames.
+Our package provides methods for converting genomic variant data into VCF data allowing the creation of complex data analysis using public genomic data and well validated Bioconductor packages.
+This package also provides an interactive web application for interacting with genomics data through GA4GH APIs.
+
+Public data servers that use GA4GH Genomics API:
+
+- [Hosting Thousand Genomes Project](http://1kgenomes.ga4gh.org/)
+- [Ensembl REST API](https://rest.ensembl.org/)
+
+# Available request methods
+
+The table below shows all available methods in **GA4GHclient** package.
+These methods are based on the [official GA4GH schemas](https://ga4gh-schemas.readthedocs.io/en/latest/schemas/).
+Let us know if some method is missing by opening an issue at <https://github.com/labbcb/GA4GHclient/issues>.
+```{r, echo=FALSE}
+knitr::kable(data.frame(
+    Method = c(
+        "searchDatasets",
+        "searchReferenceSets",
+        "searchReferences",
+        "listReferenceBases",
+        "searchVariantSets",
+        "searchVariants",
+        "searchCallSets",
+        "searchVariantAnnotationSets",
+        "searchVariantAnnotations",
+        "searchFeatureSets",
+        "searchFeatures",
+        "searchReadGroupSets",
+        "searchReads",
+        "searchBiosamples",
+        "searchIndividuals",
+        "searchRnaQuantificationSets",
+        "searchRnaQuantifications",
+        "searchExpressionLevels",
+        "searchPhenotypeAssociationSets",
+        "searchPhenotypeAssociations",
+        "getDataset",
+        "getReferenceSet",
+        "getReference",
+        "getVariantSet",
+        "getVariant",
+        "getCallSet",
+        "getVariantAnnotationSet",
+        "getVariantAnnotation",
+        "getFeatureSet",
+        "getFeature",
+        "getReadGroupSet",
+        "getBiosample",
+        "getIndividual",
+        "getRnaQuantificationSet",
+        "getRnaQuantification",
+        "getExpressionLevel"
+    ),
+    Description = c(
+        "Search for datasets",
+        "Search for reference sets (reference genomes)",
+        "Search for references (genome sequences, e.g. chromosomes)",
+        "Get the sequence bases of a reference genome by genomic range",
+        "Search for for variant sets (VCF files)",
+        "Search for variants by genomic ranges (lines of VCF files)",
+        "Search for call sets (sample columns of VCF files)",
+        "Search for variant annotation sets (annotated VCF files)",
+        "Search for annotated variants by genomic range",
+        "Search for feature sets (genomic features, e.g. GFF files)",
+        "Search for features (lines of genomic feature files)",
+        "Search for read group sets (sequence alignement, e.g BAM files)",
+        "Search for reads by genomic range (bases of aligned sequences)",
+        "Search for biosamples",
+        "Search for individuals",
+        "Search for RNA quantification sets",
+        "Search for RNA quantifications",
+        "Search for expression levels",
+        "Search for phenotype association sets",
+        "Search for phenotype associations",
+        "Get a dataset by its ID",
+        "Get a reference set by its ID",
+        "Get a reference by its ID",
+        "Get a variant set by its ID",
+        "Get a variant by its ID with all call sets for this variant",
+        "Get a call set by its ID",
+        "Get a variant annotation set by its ID",
+        "Get an annotated variant by its ID",
+        "Get a feature set by its ID",
+        "Get a feature by its ID",
+        "Get a read group set by its ID",
+        "Get a biosample by its ID",
+        "Get an individual by its ID",
+        "Get an RNA quantification set by its ID",
+        "Get an RNA quantification by its ID",
+        "Get an expression level by its ID"
+    ), stringsAsFactors = FALSE
+))
+```
+
+# Retrieving Thousand Genomes Project data through GA4GHclient package
+
+First, load required packages for this vignette.
+
+```{r, message=FALSE}
+library(GA4GHclient)
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(VariantAnnotation)
+```
+
+For this example we will use [Hosting Thousand Genomes Project](http://1kgenomes.ga4gh.org/) server.
+It contains data from the [1000 Genomes project](http://www.internationalgenome.org/).
+Set the URL of GA4GH API data server. This variable will be used by all request functions.
+
+```{r host}
+host <- "http://1kgenomes.ga4gh.org/"
+```
+
+```{r load-data, include=FALSE}
+# To avoid internet connection issues, some code of this vignette were 
+# previously executed and result data stored within the package.
+load(system.file(package = "GA4GHclient", "extdata/vignette.rda"))
+```
+
+Get basic information about data server.
+The dataset may contain many variant sets.
+A variant set represents the header of an VCF file.
+A collection of variants represent lines of an VCF file.
+The `nrow` attribute define the amount of entries we want to get from the server.
+For the dataset and variant set we want only the first entry.
+
+The `searchVariants` function requests genomic variant data from the server.
+It uses genomic intervals to retrieve these varants.
+As R programming language, the genomic indice is 1-based.
+If you want to see what reference names (e.g. chromosomes) are available run the `searchReferences` function.
+
+```{r search-variants, eval=FALSE}
+datasets <- searchDatasets(host, nrows = 1)
+datasetId <- datasets$id
+variantSets <- searchVariantSets(host, datasetId, nrows = 1)
+variantSetId <- variantSets$id
+variants <- searchVariants(host, variantSetId, referenceName = "1",
+    start = 15000, end = 16000, nrows = 10)
+```
+
+```{r print-variants-vcf}
+variants
+```
+
+Almost search functions will return an `DataFrame` object from `r Biocpkg("S4Vector")` package.
+The `searchVariants` and `getVariant` functions will return an `VCF` object with header from `r Biocpkg("VariantAnnotation")` package.
+The `getVariantSet` function will return an `VCFHeader` object.
+These three functions will return `DataFrame` object when `asVCF` or `asVCFHeader` parameters be `FALSE`.
+
+```{r search-variants-df, eval=FALSE}
+variants.df <- searchVariants(host, variantSetId, referenceName = "1",
+    start = 15000, end = 16000, nrows = 10, asVCF = FALSE)
+```
+
+```{r}
+DT::datatable(as.data.frame(variants.df), options = list(scrollX = TRUE))
+```
+
+Due to internet connection, there is a limit of amount for response data imposed by the server (or the `responseSize` parameter).
+By default the function will make requests until get all response data.
+Increasing the value of the `responseSize` parameter will reduce the number os requests to server.
+
+# Search Variants by genomic location of genes
+
+Bioconductor has annotation packages for many genomes.
+For example, the `r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")` pakage exposes an annotation databases generated from UCSC by exposing these as TxDb objects.
+Before using annotation packages, it is very important to check what version of reference genome was used by the GA4GH API-based data server.
+In other words, what reference genome was used to align sequencing reads and call for variants.
+This information can be accessed via `searchReferenceSets` function.
+
+```{r search-referencesets, eval=FALSE}
+referenceSets <- searchReferenceSets(host, nrows = 1)
+referenceSets$name
+```
+
+In this case, the version of reference genome is NCBI37, which is compatible with `r Biocpkg("TxDb.Hsapiens.UCSC.hg19.knownGene")`.
+
+Get name of all available genes.
+
+```{r}
+head(keys(org.Hs.eg.db, keytype = "SYMBOL"))
+```
+
+Get genomic location of all genes.
+
+```{r}
+head(genes(TxDb.Hsapiens.UCSC.hg19.knownGene))
+```
+
+Use case: search for variants located in SCN1A gene.
+
+```{r}
+df <- select(org.Hs.eg.db, keys = "SCN1A", columns = c("SYMBOL", "ENTREZID"), keytype = "SYMBOL")
+gr <- genes(TxDb.Hsapiens.UCSC.hg19.knownGene, filter=list(gene_id=df$ENTREZID))
+seqlevelsStyle(gr) <- "NCBI"
+```
+
+```{r search-variants-by-gene, eval=FALSE}
+variants.scn1a <- searchVariantsByGRanges(host, variantSetId, gr, asVCF = FALSE)
+```
+
+```{r}
+DT::datatable(as.data.frame(variants.scn1a[[1]]), options = list(scrollX = TRUE))
+```
+
+Use case: locate annotation data for a group of variants located at SCN1A gene.
+
+```{r}
+variants.scn1a.gr <- makeGRangesFromDataFrame(variants.scn1a[[1]],
+    seqnames.field = "referenceName")
+seqlevelsStyle(variants.scn1a.gr) <- "UCSC"
+locateVariants(variants.scn1a.gr, TxDb.Hsapiens.UCSC.hg19.knownGene,
+    CodingVariants())
+```
+
+# VariantAnnotation classes
+
+The `searchVariants` and `getVariant` functions return `VCF` objects.
+These `VCF` objects contains the VCF header.
+This is an example of how to get variants with call data.
+We can get calls running the `searchCallSets` function.
+After convertion, it can be written into disk as VCF file using `writeVcf`.
+
+```{r search-callsets, eval=FALSE}
+callSetIds <- searchCallSets(host, variantSetId, nrows = 5)$id
+vcf <- searchVariants(host, variantSetId, referenceName = "1",
+    start = 15000, end = 16000, callSetIds = callSetIds, nrows = 10)
+```
+
+```{r print-vcf-vcfheader}
+vcf
+header(vcf)
+```
+
+The `vcf` object works as expected.
+We can get the genotype data for example.
+More information about working with VCF data see `vignette("VariantAnnotation")`.
+
+```{r print-gt}
+geno(vcf)$GT
+```
+
+```{r, eval=FALSE, echo=FALSE}
+# The code below saves objects obtained from data server in package.
+# It is only necessary during development.
+save(referenceSets, variantSetId, variants, variants.df, variants.scn1a,
+    vcf, file = "inst/extdata/vignette.rda")
+```
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
