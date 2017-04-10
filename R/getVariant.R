@@ -28,16 +28,22 @@ getVariant <- function(host, variantId, asVCF = TRUE)
     variant <- request.get(host, "variants", variantId)
     variant$start <- as.numeric(variant$start) + 1
     variant$end <- as.numeric(variant$end)
+    info <- data.frame(lapply(variant$attributes$attr, function(x) {
+        r <- x$values
+        names(r) <- NULL
+        r
+    }))
+    variant$attributes <- NULL
     calls <- variant$calls
     variant$calls <- NULL
-    variant <- DataFrame(variant)
+    variant <- DataFrame(variant, info = info)
 
     if (length(calls) != 0)
         variant$calls <- list(calls)
 
     if (asVCF) {
         vcf <- makeVCFFromGA4GHResponse(variant)
-        header(vcf) <- getVariantSet(host, variant$variantSetId)
+        header(vcf) <- getVariantSet(host, variant$variantSetId[1])
         vcf
     } else {
         variant

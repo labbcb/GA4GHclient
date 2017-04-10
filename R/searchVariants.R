@@ -72,6 +72,8 @@ searchVariants <- function(host, variantSetId, referenceName, start, end,
     #     ifelse(length(x) == 0, NA, x))
     response$variants$start <- as.numeric(response$variants$start) + 1
     response$variants$end <- as.numeric(response$variants$end)
+    names(response$variants) <- sub("^attributes\\.attr\\.(.+)\\.values",
+        "info.\\1", names(response$variants))
 
     if (asVCF) {
         vcf <- makeVCFFromGA4GHResponse(response$variants)

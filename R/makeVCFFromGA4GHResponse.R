@@ -24,11 +24,10 @@ makeVCFFromGA4GHResponse <- function(variants)
         seqnames.field = "referenceName")
     rowRanges$ID <- variants$id
     fixed <- DataFrame(REF = DNAStringSet(variants$referenceBases),
-        ALT = CharacterList(variants$alternateBases))
+        ALT = CharacterList(as.list(variants$alternateBases)))
     info.idx <- startsWith(names(variants), "info.")
-    info <- DataFrame(lapply(variants[, info.idx], CharacterList),
-        row.names = seq_along(rowRanges))
-    names(info) <- sub("^info\\.", "", names(info))
+    info <- DataFrame(variants[, info.idx], row.names = seq_along(rowRanges))
+    names(info) <- sub("^info.", "", names(info))
 
     if (!all(lengths(variants$calls) == 0)) {
         colData <- DataFrame(row.names = variants$calls[[1]]$callSetName)

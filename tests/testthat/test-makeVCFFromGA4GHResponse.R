@@ -12,7 +12,7 @@ test_that("makeVCFFromGA4GHResponse works", {
 
     output <- makeVCFFromGA4GHResponse(response)
     info.idx <- startsWith(names(response), "info.")
-    expect_equal(unlist(as.data.frame(info(output))[, -15]),
+    expect_equal(unlist(as.data.frame(info(output))),
         unlist(as.data.frame(response[, info.idx])),
         check.attributes = FALSE, check.names = FALSE)
 })
