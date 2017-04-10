@@ -29,7 +29,7 @@ searchPhenotypeAssociationSets <- function(host, datasetId, nrows = Inf,
 {
     request <- unbox(data.frame(datasetId, pageSize = responseSize))
     response <- request.post(host, "phenotypeassociationsets/search", request)
-    while (response$nextPageToken != "" && nrow(response$phenotypeAssociationSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$phenotypeAssociationSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "phenotypeassociationsets/search", request)
         response$phenotypeAssociationSets <- bind_rows(response$phenotypeAssociationSets, tmp$phenotypeAssociationSets)

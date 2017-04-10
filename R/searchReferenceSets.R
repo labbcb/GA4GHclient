@@ -35,7 +35,7 @@ searchReferenceSets <- function(host, md5checksum = NA_character_,
     request <- unbox(data.frame(md5checksum, accession, assemblyId,
         pageSize = responseSize))
     response <- request.post(host, "referencesets/search", request)
-    while (response$nextPageToken != "" && nrow(response$referenceSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$referenceSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "referencesets/search", request)
         response$referenceSets <- bind_rows(response$referenceSets,

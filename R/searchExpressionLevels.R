@@ -32,7 +32,7 @@ searchExpressionLevels <- function(host, rnaQuantificationId, nrows = Inf,
 {
     request <- unbox(data.frame(rnaQuantificationId, pageSize = responseSize))
     response <- request.post(host, "expressionlevels/search", request)
-    while (response$nextPageToken != "" && nrow(response$expressionLevels) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$expressionLevels) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "expressionlevels/search", request)
         response$expressionLevels <- bind_rows(response$expressionLevels, tmp$expressionLevels)

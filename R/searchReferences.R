@@ -34,7 +34,7 @@ searchReferences <- function(host, referenceSetId, md5checksum = NA_character_,
     request <- unbox(data.frame(referenceSetId, md5checksum, accession,
         pageSize = responseSize))
     response <- request.post(host, "references/search", request)
-    while (response$nextPageToken != "" && nrow(response$references) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$references) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "references/search", request)
         response$references <- bind_rows(response$references, tmp$references)

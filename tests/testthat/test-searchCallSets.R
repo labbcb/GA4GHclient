@@ -1,36 +1,36 @@
 context("searchCallSets")
 
-host <- "http://1kgenomes.ga4gh.org/"
-
 test_that("searchCallSets works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     response <- searchCallSets(host, variantSetId)
     expect_s4_class(response, "DataFrame")
-    expect_named(response, c("updated", "name", "created",
-        "variantSetIds", "biosampleId", "id"))
-    expect_equal(nrow(response), 2504)
+    expect_equal(dim(response), c(2504, 4))
 })
 
 test_that("searchCallSets nrows parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     response <- searchCallSets(host, variantSetId, nrows = 1)
-    expect_equal(dim(response), c(1, 6))
+    expect_equal(dim(response), c(1, 4))
 })
 
 test_that("searchCallSets responseSize parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     response <- searchCallSets(host, variantSetId, responseSize = 1000)
-    expect_equal(dim(response), c(2504, 6))
+    expect_equal(dim(response), c(2504, 4))
 })
 
 test_that("searchCallSets name parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     name <- searchCallSets(host, variantSetId, nrows = 1)$name
@@ -40,6 +40,7 @@ test_that("searchCallSets name parameter works", {
 
 test_that("searchCallSets biosampleId parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     biosampleId <- searchCallSets(host, variantSetId, nrows = 1)$biosampleId

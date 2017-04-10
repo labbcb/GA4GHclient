@@ -7,12 +7,9 @@ test_that("searchVariantSets works", {
     datasetId <- searchDatasets(host, nrows = 1)$id
     response <- searchVariantSets(host, datasetId)
     expect_s4_class(response, "DataFrame")
-    expect_named(response, c("referenceSetId", "id", "datasetId",
-        "name", "metadata"))
+    expect_equal(dim(response), c(2, 5))
     expect_s4_class(response$metadata[[1]], "DataFrame")
-    expect_equal(names(response$metadata[[1]]), c("description",
-        "number", "value", "key", "type", "id"))
-    expect_equal(nrow(response), 2)
+    expect_equal(dim(response$metadata[[1]]), c(29, 6))
 })
 
 test_that("searchVariantSets nrows parameter works", {

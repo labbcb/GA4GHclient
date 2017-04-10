@@ -8,6 +8,5 @@ test_that("getCallSet works", {
     callSetId <- searchCallSets(host, variantSetId, nrows = 1)$id
     callSet <- getCallSet(host, callSetId)
     expect_s4_class(callSet, "DataFrame")
-    expect_named(callSet, c("updated", "name", "created",
-        "variantSetIds", "biosampleId", "id"))
+    expect_equal(dim(callSet), c(1, 4))
 })

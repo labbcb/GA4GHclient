@@ -30,7 +30,7 @@ searchIndividuals <- function(host, datasetId, name = NA_character_,
 {
     request <- unbox(data.frame(datasetId, name, pageSize = responseSize))
     response <- request.post(host, "individuals/search", request)
-    while (response$nextPageToken != "" && nrow(response$individuals) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$individuals) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "individuals/search", request)
         response$individuals <- bind_rows(response$individuals, tmp$individuals)

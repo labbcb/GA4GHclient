@@ -7,7 +7,7 @@ test_that("searchRnaQuantifications works", {
     id <- searchRnaQuantificationSets(host, datasetId, nrows = 1)$id
     response <- searchRnaQuantifications(host, id)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(7, 8))
+    expect_equal(dim(response), c(7, 6))
 })
 
 test_that("searchRnaQuantifications nrows parameter works", {
@@ -17,7 +17,7 @@ test_that("searchRnaQuantifications nrows parameter works", {
     id <- searchRnaQuantificationSets(host, datasetId, nrows = 1)$id
     response <- searchRnaQuantifications(host, id, nrows = 1)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(1, 8))
+    expect_equal(dim(response), c(1, 6))
 })
 
 test_that("searchRnaQuantifications reponseSize parameter works", {
@@ -27,7 +27,7 @@ test_that("searchRnaQuantifications reponseSize parameter works", {
     id <- searchRnaQuantificationSets(host, datasetId, nrows = 1)$id
     response <- searchRnaQuantifications(host, id, responseSize = 1)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(7, 8))
+    expect_equal(dim(response), c(7, 6))
 })
 
 test_that("searchRnaQuantifications biosampleId parameter works", {
@@ -38,5 +38,5 @@ test_that("searchRnaQuantifications biosampleId parameter works", {
     response <- searchRnaQuantifications(host, id,
         biosampleId = "WyIxa2dlbm9tZXMiLCJiIiwiSEcwMDEwNCJd")
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(1, 8))
+    expect_equal(dim(response), c(1, 6))
 })

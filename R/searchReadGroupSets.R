@@ -32,7 +32,7 @@ searchReadGroupSets <- function(host, datasetId, name = NA_character_,
     request <- unbox(data.frame(datasetId, name, biosampleId,
         pageSize = responseSize))
     response <- request.post(host, "readgroupsets/search", request)
-    while (response$nextPageToken != "" && nrow(response$readGroupSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$readGroupSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "readgroupsets/search", request)
         response$readGroupSets <- bind_rows(response$readGroupSets, tmp$readGroupSets)

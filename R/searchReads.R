@@ -42,7 +42,7 @@ searchReads <- function(host, readGroupIds, referenceId = NA_character_,
         pageSize = responseSize))
     request$readGroupIds <- list(readGroupIds)
     response <- request.post(host, "reads/search", request)
-    while (response$nextPageToken != "" && nrow(response$alignments) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$alignments) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "reads/search", request)
         response$alignments <- bind_rows(response$alignments, tmp$alignments)

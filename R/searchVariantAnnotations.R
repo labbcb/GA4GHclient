@@ -56,7 +56,7 @@ searchVariantAnnotations <- function(host, variantAnnotationSetId,
     if (length(effects) != 0)
         request$effects <- effects
     response <- request.post(host, "variantannotations/search", request)
-    while (response$nextPageToken != "" && nrow(response$variantAnnotations) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$variantAnnotations) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "variantannotations/search", request)
         response$variantAnnotations <- bind_rows(response$variantAnnotations,

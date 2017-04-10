@@ -7,6 +7,5 @@ test_that("getReference works", {
     referenceId <- searchReferences(host, referenceSetId, nrows = 1)$id
     reference <- getReference(host, referenceId)
     expect_s4_class(reference, "DataFrame")
-    expect_named(reference, c("name", "sourceUri", "sourceDivergence", "length",
-        "md5checksum", "isDerived", "id", "ncbiTaxonId"))
+    expect_equal(dim(reference), c(1, 4))
 })

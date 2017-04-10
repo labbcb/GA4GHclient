@@ -8,5 +8,6 @@ test_that("getFeature works", {
     featureId <- searchFeatures(host, featureSetId, nrows = 1)$id
     feature <- getFeature(host, featureId)
     expect_s4_class(feature, "DataFrame")
+    expect_equal(dim(feature), c(1, 30))
 })
 

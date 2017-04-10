@@ -63,7 +63,7 @@ test_that("searchVariants asVCF=FALSE returns DataFrame", {
     response <- searchVariants(host, variantSetId, referenceName = "1",
         start = 15000, end = 16000, asVCF = FALSE)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(26, 25))
+    expect_equal(dim(response), c(26, 24))
 })
 
 test_that("searchVariants with no result should return empty data frame", {

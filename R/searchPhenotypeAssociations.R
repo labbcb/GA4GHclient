@@ -40,7 +40,7 @@ searchPhenotypeAssociations <- function(host, phenotypeAssociationSetId,
     if (length(phenotypeIds) > 0)
         request$phenotypeIds <- list(phenotypeIds)
     response <- request.post(host, "featurephenotypeassociations/search", request)
-    while (response$nextPageToken != "" && nrow(response$associations) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$associations) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "featurephenotypeassociations/search", request)
         response$associations <- bind_rows(response$associations, tmp$associations)

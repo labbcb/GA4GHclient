@@ -34,7 +34,7 @@ searchRnaQuantifications <- function(host, rnaQuantificationSetId,
     request <- unbox(data.frame(rnaQuantificationSetId, biosampleId,
         pageSize = responseSize))
     response <- request.post(host, "rnaquantifications/search", request)
-    while (response$nextPageToken != "" && nrow(response$rnaQuantifications) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$rnaQuantifications) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "rnaquantifications/search", request)
         response$rnaQuantifications <- bind_rows(response$rnaQuantifications, tmp$rnaQuantifications)

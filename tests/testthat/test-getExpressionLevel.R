@@ -9,5 +9,5 @@ test_that("getExpressionLevel works", {
     expressionLevelId <- searchExpressionLevels(host, rnaQuantificationId, nrows = 1)$id
     response <- getExpressionLevel(host, expressionLevelId)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(1, 11))
+    expect_equal(dim(response), c(1, 7))
 })

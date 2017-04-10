@@ -24,7 +24,7 @@ searchDatasets <- function(host, nrows = Inf, responseSize = NA_integer_)
 {
     request <- unbox(data.frame(pageSize = responseSize))
     response <- request.post(host, "datasets/search", request)
-    while (response$nextPageToken != "" && nrow(response$datasets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$datasets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "datasets/search", request)
         response$datasets <- bind_rows(response$datasets, tmp$datasets)

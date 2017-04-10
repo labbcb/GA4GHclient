@@ -18,7 +18,7 @@ test_that("searchFeatures nrows parameter works", {
     featureSetId <- searchFeatureSets(host, datasetId)$id
     response <- searchFeatures(host, featureSetId, referenceName = "chr1",
         start = 15000, end = 16000, nrows = 1)
-    expect_equal(dim(response), c(1, 36))
+    expect_equal(dim(response), c(1, 34))
 })
 
 test_that("searchFeatures responseSize parameter works", {
@@ -27,5 +27,5 @@ test_that("searchFeatures responseSize parameter works", {
     featureSetId <- searchFeatureSets(host, datasetId)$id
     response <- searchFeatures(host, featureSetId, referenceName = "chr1",
         start = 15000, end = 16000, responseSize = 1)
-    expect_equal(dim(response), c(4, 36))
+    expect_equal(dim(response), c(4, 34))
 })

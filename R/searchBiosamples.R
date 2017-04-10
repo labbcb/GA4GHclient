@@ -32,7 +32,7 @@ searchBiosamples <- function(host, datasetId, name = NA_character_,
     request <- unbox(data.frame(datasetId, name, individualId,
         pageSize = responseSize))
     response <- request.post(host, "biosamples/search", request)
-    while (response$nextPageToken != "" && nrow(response$biosamples) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$biosamples) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "biosamples/search", request)
         response$biosamples <- bind_rows(response$biosamples, tmp$biosamples)

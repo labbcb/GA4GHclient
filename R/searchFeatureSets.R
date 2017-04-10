@@ -28,7 +28,7 @@ searchFeatureSets <- function(host, datasetId, nrows = Inf,
 {
     request <- unbox(data.frame(datasetId, pageSize = responseSize))
     response <- request.post(host, "featuresets/search", request)
-    while (response$nextPageToken != "" && nrow(response$featureSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$featureSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "featuresets/search", request)
         response$featureSets <- bind_rows(response$featureSets, tmp$featureSets)

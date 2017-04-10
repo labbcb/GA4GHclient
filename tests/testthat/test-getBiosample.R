@@ -7,5 +7,5 @@ test_that("getBiosample works", {
     biosampleId <- searchBiosamples(host, datasetId, nrows = 1)$id
     response <- getBiosample(host, biosampleId)
     expect_s4_class(response, "DataFrame")
-    expect_equal(ncol(response), 26)
+    expect_equal(dim(response), c(1, 5))
 })

@@ -53,7 +53,7 @@ searchVariants <- function(host, variantSetId, referenceName, start, end,
     if (length(callSetIds) != 0)
         request$callSetIds <- list(callSetIds)
     response <- request.post(host, "variants/search", request)
-    while (response$nextPageToken != "" && nrow(response$variants) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$variants) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "variants/search", request)
         response$variants <- bind_rows(response$variants, tmp$variants)

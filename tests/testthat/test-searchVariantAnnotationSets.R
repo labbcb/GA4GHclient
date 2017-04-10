@@ -15,8 +15,9 @@ test_that("searchVariantAnnotationSets responseSize parameter works", {
     skip_on_bioc()
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 2)$id[2]
-    response <- searchVariantAnnotationSets(host, variantSetId, responseSize =1)
-    expect_equal(dim(response), c(1, 47))
+    response <- searchVariantAnnotationSets(host, variantSetId,
+        responseSize = 1)
+    expect_equal(dim(response), c(1, 43))
 })
 
 test_that("searchVariants with no result should return NULL", {

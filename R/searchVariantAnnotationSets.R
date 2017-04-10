@@ -29,7 +29,7 @@ searchVariantAnnotationSets <- function(host, variantSetId, nrows = Inf,
 {
     request <- unbox(data.frame(variantSetId, pageSize = responseSize))
     response <- request.post(host, "variantannotationsets/search", request)
-    while (response$nextPageToken != "" && nrow(response$variantAnnotationSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$variantAnnotationSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "variantannotationsets/search", request)
         response$variantAnnotationSets <-

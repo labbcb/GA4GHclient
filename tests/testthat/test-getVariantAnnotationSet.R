@@ -9,4 +9,5 @@ test_that("getVariantAnnotationSet works", {
         nrows = 1)$id
     variantAnnotationSet <- getVariantAnnotationSet(host,variantAnnotationSetId)
     expect_s4_class(variantAnnotationSet, "DataFrame")
+    expect_equal(dim(variantAnnotationSet), c(1, 43))
 })

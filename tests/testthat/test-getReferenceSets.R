@@ -6,7 +6,5 @@ test_that("getReferenceSet works", {
     referenceSetId <- searchReferenceSets(host, nrows = 1)$id
     referenceSet <- getReferenceSet(host, referenceSetId)
     expect_s4_class(referenceSet, "DataFrame")
-    expect_named(referenceSet, c("description", "sourceUri",
-        "assemblyId", "md5checksum", "isDerived",
-        "id", "ncbiTaxonId", "name"))
+    expect_equal(dim(referenceSet), c(1, 6))
 })

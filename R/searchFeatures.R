@@ -55,7 +55,7 @@ searchFeatures <- function(host, featureSetId, name = NA_character_,
     if (length(featureTypes) != 0)
         request$featureTypes <- list(featureTypes)
     response <- request.post(host, "features/search", request)
-    while (response$nextPageToken != "" && nrow(response$features) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$features) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "features/search", request)
         response$features <- bind_rows(response$features, tmp$features)

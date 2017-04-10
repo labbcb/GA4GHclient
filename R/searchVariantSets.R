@@ -28,7 +28,7 @@ searchVariantSets <- function(host, datasetId, nrows = Inf,
 {
     request <- unbox(data.frame(datasetId, pageSize = responseSize))
     response <- request.post(host, "variantsets/search", request)
-    while (response$nextPageToken != "" && nrow(response$variantSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$variantSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "variantsets/search", request)
         response$variantSets <- bind_rows(response$variantSets, tmp$variantSets)

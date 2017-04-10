@@ -7,5 +7,5 @@ test_that("getIndividual works", {
     individualId <- searchIndividuals(host, datasetId, nrows = 1)$id
     response <- getIndividual(host, individualId)
     expect_s4_class(response, "DataFrame")
-    expect_equal(ncol(response), 29)
+    expect_equal(dim(response), c(1, 8))
 })

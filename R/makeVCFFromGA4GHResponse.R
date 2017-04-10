@@ -26,7 +26,8 @@ makeVCFFromGA4GHResponse <- function(variants)
     fixed <- DataFrame(REF = DNAStringSet(variants$referenceBases),
         ALT = CharacterList(variants$alternateBases))
     info.idx <- startsWith(names(variants), "info.")
-    info <- DataFrame(lapply(variants[, info.idx], CharacterList))
+    info <- DataFrame(lapply(variants[, info.idx], CharacterList),
+        row.names = seq_along(rowRanges))
     names(info) <- sub("^info\\.", "", names(info))
 
     if (!all(lengths(variants$calls) == 0)) {

@@ -6,7 +6,7 @@ test_that("request.post works", {
     request <- unbox(data.frame(NA_integer_, NA_integer_))
     response <- request.post(host, "datasets/search", request)
     expect_is(response, "list")
-    expect_named(response, c("nextPageToken", "datasets"))
+    expect_named(response, c("datasets"))
 })
 
 test_that("request.post should throw error message", {

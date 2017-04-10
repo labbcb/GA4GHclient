@@ -8,7 +8,7 @@ test_that("searchExpressionLevels works", {
     rnaQuantificationId <- searchRnaQuantifications(host, id, nrows = 1)$id
     response <- searchExpressionLevels(host, rnaQuantificationId, nrows = 100)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(100, 11))
+    expect_equal(dim(response), c(100, 7))
 })
 
 test_that("searchExpressionLevels nrows parameter works", {
@@ -19,7 +19,7 @@ test_that("searchExpressionLevels nrows parameter works", {
     rnaQuantificationId <- searchRnaQuantifications(host, id, nrows = 1)$id
     response <- searchExpressionLevels(host, rnaQuantificationId, nrows = 1)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(1, 11))
+    expect_equal(dim(response), c(1, 7))
 })
 
 test_that("searchExpressionLevels reponseSize parameter works", {
@@ -31,5 +31,5 @@ test_that("searchExpressionLevels reponseSize parameter works", {
     response <- searchExpressionLevels(host, rnaQuantificationId, nrows = 100,
         responseSize = 10)
     expect_s4_class(response, "DataFrame")
-    expect_equal(dim(response), c(100, 11))
+    expect_equal(dim(response), c(100, 7))
 })

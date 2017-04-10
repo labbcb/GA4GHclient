@@ -31,7 +31,7 @@ searchCallSets <- function(host, variantSetId, name = NA_character_,
     request <- unbox(data.frame(variantSetId, name, biosampleId,
         pageSize = responseSize))
     response <- request.post(host, "callsets/search", request)
-    while (response$nextPageToken != "" && nrow(response$callSets) < nrows) {
+    while (!is.null(response$nextPageToken) && nrow(response$callSets) < nrows) {
         request$pageToken <- response$nextPageToken
         tmp <- request.post(host, "callsets/search", request)
         response$callSets <- bind_rows(response$callSets, tmp$callSets)
