@@ -31,7 +31,7 @@ HGVSnames <- function(start, ref, alt, type = "g", seqnames=NA_character_)
     has.seqnames <- !(is.na(seqnames) | seqnames == "")
 
     seqname <- ifelse(has.seqnames, paste0(seqnames, ":"), "")
-    end <- as.integer(sub("\\D.+$", "", start)) + + nchar(ref) - 1
+    end <- as.integer(sub("\\D.+$", "", start)) + nchar(ref) - 1
     mode <- ifelse(is.del, "del", ifelse(is.sub, ">", "delins"))
 
     paste0(seqname, type, ".", start,

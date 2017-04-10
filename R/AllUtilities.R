@@ -11,8 +11,9 @@ request.post <- function(host, resource, request, N.TRIES = 1L)
 
     while (N.TRIES > 0L) {
         response <- tryCatch(
-            POST(url, content_type_json(), body=toJSON(request), accept_json()),
-            error=identity)
+            POST(url, content_type_json(), body = toJSON(request),
+                accept_json()),
+            error = identity)
         if (!inherits(response, "error"))
             break
         N.TRIES <- N.TRIES - 1L
@@ -47,7 +48,7 @@ request.get <- function(host, resource, request, N.TRIES = 1L)
 
     while (N.TRIES > 0L) {
         response <- tryCatch(GET(url, content_type_json(), accept_json()),
-            error=identity)
+            error = identity)
         if (!inherits(response, "error"))
             break
         N.TRIES <- N.TRIES - 1L

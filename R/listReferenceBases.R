@@ -19,7 +19,7 @@
 #' }
 #' @seealso \code{\link{searchReferenceSets}}, \code{\link{searchReferences}}
 #' @export listReferenceBases
-listReferenceBases <- function (host, referenceId, start = 1, end = NA_integer_)
+listReferenceBases <- function(host, referenceId, start = 1, end = NA_integer_)
 {
     request <- unbox(data.frame(referenceId, start = start - 1, end = end))
     response <- request.post(host, "listreferencebases", request)
