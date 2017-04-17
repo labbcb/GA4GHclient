@@ -1,0 +1,81 @@
+---
+title: "Up and running GA4GH API server"
+author: "Welliton Souza"
+date: '`r Sys.Date()`'
+package: "`r pkg_ver('GA4GHclient')`"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Up and running GA4GH API server}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8} 
+---
+
+# Installing GA4GH API server
+
+This vignette describes how to install an instance of [GA4GH API server](https://github.com/ga4gh/server) for tests and development. This tutorial is meant to be used on Linux-based systems. However, the GA4GHclient package also works on Windows systems.
+
+Instead of installing the required softwares on system we will install locally. This part of the vignette is based on [GA4GH API Demo](http://ga4gh-reference-implementation.readthedocs.io/en/latest/demo.html#demo). For installing system-wide see the [Official Installation Guide](http://ga4gh-reference-implementation.readthedocs.io/en/latest/demo.html#demo).
+
+It is required some system packages. For Ubuntu-based systems. On bash.
+
+```
+sudo apt-get install python-dev python-virtualenv zlib1g-dev libxslt1-dev libffi-dev libssl-dev
+```
+
+Create an isolated environment for GA4GH API server.
+
+```bash
+virtualenv ga4gh-env
+source ga4gh-env/bin/activate
+```
+
+Install stable version of Ga4GH API server from [Python Package Index](https://pypi.python.org/pypi/ga4gh). This version is recommended for testing GA4GH API server and GA4GHclient package.
+
+```
+pip install ga4gh --pre
+```
+
+Or install development version from [Official GitHub Repository](https://github.com/ga4gh/server). This version is recommended for developing GA4GHclient package.
+
+```
+git clone https://github.com/ga4gh/server.git
+cd server
+python setup.py install
+cd ..
+```
+
+Download example data.
+
+```
+wget https://github.com/ga4gh/server/releases/download/data/ga4gh-example-data-v4.5.tar
+tar xvf ga4gh-example-data-v4.5.tar
+```
+
+Run GA4GH API server. It will be available at http://127.0.0.1:8000/.
+
+```
+ga4gh_server
+```
+
+# Testing GA4GH API server
+
+Now we can test the installation by running GA4GHclient package.
+
+```{r, eval=FALSE}
+library(GA4GHclient)
+host <- "http://127.0.0.1:8000/"
+app(host)
+```
+
+For more information about GA4GHclient package.
+
+```{r, eval=FALSE}
+vignette("GA4GHclient")
+```
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
