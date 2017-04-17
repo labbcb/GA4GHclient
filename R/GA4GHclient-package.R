@@ -17,12 +17,13 @@
 #' @importMethodsFrom BiocGenerics as.data.frame start end lengths
 #' @importMethodsFrom GenomeInfoDb seqnames
 #' @importFrom Biostrings DNAStringSet BString
-#' @importFrom dplyr %>% bind_rows
+#' @importFrom dplyr %>% bind_rows select starts_with mutate
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom httr content content_type_json GET POST http_error http_status accept_json
 #' @importFrom IRanges CharacterList DataFrameList
 #' @importFrom jsonlite fromJSON toJSON unbox
 #' @importFrom methods as
+#' @importFrom purrr map_df
 #' @importFrom S4Vectors DataFrame Rle
 #' @importFrom VariantAnnotation VCF VCFHeader header header<-
 NULL

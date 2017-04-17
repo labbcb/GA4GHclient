@@ -87,5 +87,3 @@ getGeno <- function(call)
     geno$GT <- mapply(getGT, genotype = call$genotype, phaseset = call$phaseset)
     geno
 }
-
-

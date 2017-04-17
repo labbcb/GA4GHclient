@@ -66,20 +66,23 @@ searchVariants <- function(host, variantSetId, referenceName, start, end,
         response$variants <- response$variants[seq(1, nrows), ]
 
     is.na(response$variants) <- response$variants == "NULL"
-    response$variants$names <- lapply(response$variants$names, function(x)
-        ifelse(length(x) == 0, NA, x))
-    # response$variants$calls <- lapply(response$variants$calls, function(x)
-    #     ifelse(length(x) == 0, NA, x))
-    response$variants$start <- as.numeric(response$variants$start) + 1
-    response$variants$end <- as.numeric(response$variants$end)
-    names(response$variants) <- sub("^attributes\\.attr\\.(.+)\\.values",
-        "info.\\1", names(response$variants))
+
+    variants <- select(response$variants, -starts_with("attributes")) %>%
+        mutate(
+            start = as.numeric(start) + 1,
+            end = as.numeric(end),
+            names = lapply(names, function(x) ifelse(length(x) == 0, NA, x))
+        )
+
+    info <- select(response$variants, starts_with("attributes")) %>%
+        map_df(~ lapply(., unlist, use.names = FALSE))
+    names(info) <- sub("^attributes\\.attr\\.(.+)\\.values", "info.\\1", names(info))
 
     if (asVCF) {
-        vcf <- makeVCFFromGA4GHResponse(response$variants)
+        vcf <- makeVCFFromGA4GHResponse(cbind(variants, info))
         header(vcf) <- getVariantSet(host, variantSetId)
         vcf
     } else {
-        DataFrame(response$variants)
+        DataFrame(cbind(variants, info))
     }
 }
