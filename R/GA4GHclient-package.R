@@ -23,7 +23,6 @@
 #' @importFrom IRanges CharacterList DataFrameList
 #' @importFrom jsonlite fromJSON toJSON unbox
 #' @importFrom methods as
-#' @importFrom purrr map_df
 #' @importFrom S4Vectors DataFrame Rle
 #' @importFrom VariantAnnotation VCF VCFHeader header header<-
 NULL

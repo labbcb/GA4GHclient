@@ -1,9 +1,8 @@
 context("searchVariantSets")
 
-host <- "http://1kgenomes.ga4gh.org/"
-
 test_that("searchVariantSets works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     response <- searchVariantSets(host, datasetId)
     expect_s4_class(response, "DataFrame")
@@ -14,6 +13,7 @@ test_that("searchVariantSets works", {
 
 test_that("searchVariantSets nrows parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     response <- searchVariantSets(host, datasetId, nrows = 1)
     expect_equal(dim(response), c(1, 5))
@@ -21,6 +21,7 @@ test_that("searchVariantSets nrows parameter works", {
 
 test_that("searchVariantSets responseSize parameter works", {
     skip_on_bioc()
+    host <- "http://1kgenomes.ga4gh.org/"
     datasetId <- searchDatasets(host, nrows = 1)$id
     response <- searchVariantSets(host, datasetId, responseSize = 1)
     expect_equal(dim(response), c(2, 5))

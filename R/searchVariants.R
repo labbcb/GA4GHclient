@@ -74,9 +74,9 @@ searchVariants <- function(host, variantSetId, referenceName, start, end,
             names = lapply(names, function(x) ifelse(length(x) == 0, NA, x))
         )
 
-    info <- select(response$variants, starts_with("attributes")) %>%
-        map_df(~ lapply(., unlist, use.names = FALSE))
+    info <- select(response$variants, starts_with("attributes"))
     names(info) <- sub("^attributes\\.attr\\.(.+)\\.values", "info.\\1", names(info))
+    info <- data.frame(do.call(cbind, lapply(info, function(x) lapply(x, unlist, use.names = FALSE))))
 
     if (asVCF) {
         vcf <- makeVCFFromGA4GHResponse(cbind(variants, info))
