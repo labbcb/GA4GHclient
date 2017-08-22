@@ -1,10 +1,12 @@
 ---
-title: "GA4GHclient"
-author: "Welliton Souza"
-date: '`r Sys.Date()`'
-package: "`r pkg_ver('GA4GHclient')`"
+title: GA4GHclient
+author:
+- name: Welliton Souza
+  affiliation: University of Campinas, Campinas, Brazil
+package: GA4GHclient
 output: 
-  BiocStyle::html_document
+  BiocStyle::html_document2:
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{GA4GHclient}
   %\VignetteEngine{knitr::rmarkdown}
@@ -276,6 +278,6 @@ save(referenceSets, variantSetId, variants, variants.df, variants.scn1a,
 
 # Session Information
 
-```{r}
+```{r sessionInfo, echo=FALSE}
 sessionInfo()
 ```
