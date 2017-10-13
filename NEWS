@@ -1,0 +1,5 @@
+Changes in version 1.2:
+
+BUG FIXES
+
+    o   Fix bug due to changes in dplyr package
